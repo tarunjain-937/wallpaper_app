@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:wallpaper_app/Model/wallpaperClassModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:wallpaper_app/Screens/fullSreen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,19 +28,41 @@ class _HomePageState extends State<HomePage> {
     "lib/Images/img5.jpg"
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWallpapers();
+  }
+
+  List images=[];
+  int page = 1;
   String apiKey="CAGWT7kaldvOhSk9u0LPtEUKLDt0KidTVdlS8fvBA24TuWvhG0OsoBN1";
-  Future<WallpaperClassModel> getWallpapers() async{
-    String url = " https://api.pexels.com/v1/curated?page=1&per_page=40";
-    final response = await http.get(Uri.parse(url),
-    headers:{
-      "Authorization":apiKey
+
+   getWallpapers() async{
+    String url = "https://api.pexels.com/v1/curated?page=1&per_page=40";
+    await http.get(Uri.parse(url),
+    headers:{"Authorization":apiKey}).then((value){
+    Map result = jsonDecode(value.body);
+    setState(() {
+      images = result["photos"];
     });
-    var data = jsonDecode(response.body.toString());
-    if (response.statusCode == 200) {
-      return WallpaperClassModel.fromJson(data);
-    } else {
-      return WallpaperClassModel.fromJson(data);
-    }
+    print(images.length);
+    });
+  }
+
+  loadMore() async{
+     setState(() {
+       page=page+1;
+     });
+     String url= "https://api.pexels.com/v1/curated?page=1&per_page=40&page="+page.toString();
+     await http.get(Uri.parse(url),
+         headers:{"Authorization":apiKey}).then((value){
+           Map result = jsonDecode(value.body);
+           setState(() {
+             images.addAll(result['photos']);
+           });
+     });
   }
 
   @override
@@ -57,7 +79,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(bottom: 0,top: 8),
         child: Column(
           children: [
             Container(
@@ -120,25 +142,29 @@ class _HomePageState extends State<HomePage> {
 
             //---------------------------
             Expanded(
-              child: FutureBuilder<WallpaperClassModel>(
-                future: getWallpapers(),
-                  builder: (context, snapshot) {
-                    if(snapshot.hasData){
-                      return ListView.builder(
-                        itemCount: snapshot.data!.photos!.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 400,
-                              color: Colors.orange,
-                            ),
-                          );
-                        },);
-                    }else{
-                      return Center(child: CircularProgressIndicator());
-                    }
+              child: GridView.builder(
+                itemCount: images.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2, childAspectRatio: 2/3, mainAxisSpacing: 2),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return FullScreen(imageUrl: images[index]["src"]["large2x"]);
+                        },));
+                      },
+                      child: Container(
+                        color: Colors.grey,
+                        child: Image.network(images[index]["src"]["tiny"],fit: BoxFit.cover,),
+                      ),
+                    );
                   },),
+            ),
+
+            //-----------------------------
+            Container(width: double.infinity,
+              child: ElevatedButton(onPressed: (){ loadMore();},
+                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.black)),
+                  child: Text("Load More",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
             )
           ],
         ),
