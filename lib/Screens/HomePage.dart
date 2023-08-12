@@ -132,40 +132,50 @@ class _HomePageState extends State<HomePage> {
                   },),
             ),
 
-            Row(
-              children: [
-                Expanded(child: Divider(indent: 10.w,thickness: 2.sp,endIndent: 10.w)),
-                Text(" Wallpapers ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                Expanded(child: Divider(indent: 10.w,thickness: 2.sp,endIndent: 10.w)),
-              ],
-            ),
-
             //---------------------------
             Expanded(
-              child: GridView.builder(
-                itemCount: images.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2, childAspectRatio: 2/3, mainAxisSpacing: 2),
-                  itemBuilder: (context, index) {
-                    return InkWell(
+              child: Stack(
+                children: [
+                  GridView.builder(
+                    itemCount: images.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2, childAspectRatio: 2/3, mainAxisSpacing: 2),
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return FullScreen(imageUrl: images[index]["src"]["large2x"]);
+                            },));
+                          },
+                          child: Container(
+                            color: Colors.grey,
+                            child: Image.network(images[index]["src"]["tiny"],fit: BoxFit.cover,),
+                          ),
+                        );
+                      },),
+
+                  //-----------------------------
+                  Container(
+                    margin: EdgeInsets.only(top: 525,left:130),
+                    child: InkWell(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return FullScreen(imageUrl: images[index]["src"]["large2x"]);
-                        },));
+                        loadMore();
                       },
                       child: Container(
-                        color: Colors.grey,
-                        child: Image.network(images[index]["src"]["tiny"],fit: BoxFit.cover,),
+                        decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.white,width: 2)
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: Text("Load more",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black),),
                       ),
-                    );
-                  },),
+                    ),
+                  )
+                ],
+              ),
             ),
 
-            //-----------------------------
-            Container(width: double.infinity,
-              child: ElevatedButton(onPressed: (){ loadMore();},
-                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.black)),
-                  child: Text("Load More",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
-            )
+            //.....
           ],
         ),
       ),

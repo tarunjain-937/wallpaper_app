@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:wallpaper_app/Screens/HomePage.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
         builder: (context, child) {
-          return const MaterialApp(
+          return const GetMaterialApp(
             title: 'Wallpaper app',
             debugShowCheckedModeBanner: false,
             home: HomePage(),
