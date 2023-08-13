@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:wallpaper_app/Screens/SearchScreen.dart';
 import 'package:wallpaper_app/Screens/fullSreen.dart';
 
 class HomePage extends StatefulWidget {
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage> {
      });
   }
 
+  final TextEditingController SearchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,51 +84,66 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.only(bottom: 0,top: 8),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 2.w,color: Colors.black),
-                borderRadius: BorderRadius.circular(50.r),
-                color: Color.fromRGBO(196, 223, 223, 1),
-              ),
-              height: 45.h, width: double.infinity,
-              child: Padding(
-                padding:  EdgeInsets.only(left: 30.w,right: 15.w,top: 0.h,bottom: 0.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: "Search wallpaper",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold,color: Colors.black)
+            Padding(
+              padding: EdgeInsets.only(left: 10.h, right: 10.h),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 2.w,color: Colors.black),
+                  borderRadius: BorderRadius.circular(50.r),
+                  color: Color.fromRGBO(196, 223, 223, 1),
+                ),
+                height: 45.h, width: double.infinity,
+                child: Padding(
+                  padding:  EdgeInsets.only(left: 30.w,right: 15.w,top: 0.h,bottom: 0.h),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Search wallpaper",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.bold,color: Colors.black)
+                          ),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.sp,color: Colors.black),
+                         controller: SearchController,
+                         autocorrect: true,
                         ),
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.sp,color: Colors.black),
-                       autocorrect: true,
                       ),
-                    ),
-                    IconButton(onPressed: (){}, icon: Icon(Icons.search,size: 30.sp,color: Colors.black,))
-                  ],
+                      IconButton(onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return SearchScreen(SearchController: SearchController.text.toString());
+                        },));
+                      }, icon: Icon(Icons.search,size: 25.sp,color: Colors.black,))
+                    ],
+                  ),
                 ),
               ),
             ),
 
-            Container( height: 100.h,width: double.infinity,
+            Container( height: 98.h,width: double.infinity,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                   itemCount:category.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Container(height: 63.h, width: 120.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(width: 2.w,color: Colors.black),
-                              image: DecorationImage(image: AssetImage(imgSource[index]),fit: BoxFit.cover),
-                            ),),
-                          Text(category[index],style: TextStyle(fontWeight: FontWeight.w700,fontSize: 18.sp),)
-                        ],
+                    return InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return SearchScreen(SearchController: category[index].toString());
+                        },));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Container(height: 60.h, width: 120.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(width: 2.w,color: Colors.black),
+                                image: DecorationImage(image: AssetImage(imgSource[index]),fit: BoxFit.cover),
+                              ),),
+                            Text(category[index],style: TextStyle(fontWeight: FontWeight.w700,fontSize: 15.sp),)
+                          ],
+                        ),
                       ),
                     );
                   },),
@@ -138,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   GridView.builder(
                     itemCount: images.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2, childAspectRatio: 2/3, mainAxisSpacing: 2),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 2.w, childAspectRatio: 2/3, mainAxisSpacing: 2.h),
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: (){
@@ -155,7 +172,7 @@ class _HomePageState extends State<HomePage> {
 
                   //-----------------------------
                   Container(
-                    margin: EdgeInsets.only(top: 525,left:130),
+                    margin: EdgeInsets.only(top: 465.h,left: 130.w),
                     child: InkWell(
                       onTap: (){
                         loadMore();
@@ -163,19 +180,17 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         decoration: BoxDecoration(
                             color: Colors.white38,
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: Colors.white,width: 2)
+                            borderRadius: BorderRadius.circular(50.r),
+                            border: Border.all(color: Colors.white,width: 2.w)
                         ),
-                        padding: EdgeInsets.all(8),
-                        child: Text("Load more",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black),),
+                        padding: EdgeInsets.all(8.sp),
+                        child: Text("Load more",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.h,color: Colors.black),),
                       ),
                     ),
                   )
                 ],
               ),
             ),
-
-            //.....
           ],
         ),
       ),

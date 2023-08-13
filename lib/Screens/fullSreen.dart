@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +23,16 @@ class _FullScreenState extends State<FullScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Wallpaper ",style: TextStyle(fontSize: 26.sp,fontWeight: FontWeight.bold,color: Colors.white),),
+            Text("Hub",style: TextStyle(fontSize: 26.sp,fontWeight: FontWeight.bold,color: Colors.blueAccent),)
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           Expanded(
@@ -36,14 +46,15 @@ class _FullScreenState extends State<FullScreen> {
               )),
 
           Positioned(
-             top: 760, left: 130,
+             top: 600.h, left: 120.w,
             child: InkWell(
               onTap: (){
                 setWallpaper();
                 Timer(Duration(seconds: 1),() {
                   Get.snackbar("","",
                       messageText: Text("Thankyou for using Wallpaper Hub"),
-                      titleText: Text("wallpaper is set",style: TextStyle(fontSize: 23,fontWeight: FontWeight.w700),));
+                       margin: EdgeInsets.only(top: 100.h),
+                      titleText: Text("wallpaper is set",style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.w700),));
                 });
                 Timer(Duration(seconds: 3), () {
                   Navigator.pop(context);
@@ -51,12 +62,12 @@ class _FullScreenState extends State<FullScreen> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white38,
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(color: Colors.white,width: 2)
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(50.r),
+                  border: Border.all(color: Colors.white,width: 2.w)
                 ),
-                padding: EdgeInsets.all(12),
-                child: Text("Set Wallpaper",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Colors.black),),
+                padding: EdgeInsets.all(12.sp),
+                child: Text("Set Wallpaper",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.sp,color: Colors.black),),
               ),
             ),
           )
@@ -65,19 +76,3 @@ class _FullScreenState extends State<FullScreen> {
     );
   }
 }
-
-/*
-* Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-
-                  },
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.black)),
-                  child: Text(
-                    "Set Wallpaper",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  )),
-            )
-* */
